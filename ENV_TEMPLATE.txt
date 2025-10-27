@@ -1,79 +1,33 @@
 # ===============================================
 # NUHOME INTERIORS - BACKEND CONFIGURATION
 # ===============================================
-# Copy this file and rename it to ".env"
-# Then fill in your actual values
-# ===============================================
 
 # Server Configuration
 PORT=5000
 
-# MongoDB Connection String
-# -----------------------------------------------
-# Option 1: Local MongoDB
-MONGODB_URI=mongodb://localhost:27017/nuhome_interiors
+# MongoDB Connection
+MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@YOUR_CLUSTER.mongodb.net/nuhome_interiors
 
-# Option 2: MongoDB Atlas (Cloud) - Uncomment and use this if using Atlas
-# MONGODB_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@YOUR_CLUSTER.mongodb.net/nuhome_interiors?retryWrites=true&w=majority
-
-# Email Configuration
-# -----------------------------------------------
-# IMPORTANT: Emails are sent FROM nuhomeinteriors9@gmail.com TO teja1432ram@gmail.com
-# Generate App Password for nuhomeinteriors9@gmail.com
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
+# Email Configuration (Gmail)
 EMAIL_USER=nuhomeinteriors9@gmail.com
-EMAIL_PASSWORD=your-16-character-app-password
-EMAIL_FROM=NUHome Interiors <nuhomeinteriors9@gmail.com>
-
-# Note: Business notifications are sent to nuhomeinteriorleads@gmail.com (hardcoded in emailService.js)
-NOTIFICATION_EMAIL=nuhomeinteriorleads@gmail.com
-
-# For Outlook/Hotmail (uncomment if using):
-# EMAIL_HOST=smtp-mail.outlook.com
-# EMAIL_PORT=587
-
-# For Yahoo (uncomment if using):
-# EMAIL_HOST=smtp.mail.yahoo.com
-# EMAIL_PORT=587
-
-# WhatsApp Configuration
-# -----------------------------------------------
-WHATSAPP_PHONE=916300724553
-
-# Optional: Twilio for Automatic WhatsApp (see WHATSAPP_SETUP_GUIDE.md)
-# TWILIO_ACCOUNT_SID=your_account_sid
-# TWILIO_AUTH_TOKEN=your_auth_token
-# TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
+EMAIL_PASSWORD=your-16-digit-app-password-here
 
 # Frontend URL (for CORS)
-# -----------------------------------------------
-# For local development:
-FRONTEND_URL=http://localhost:3000
-
-# For production (Vercel), update with your Vercel URL:
-# FRONTEND_URL=https://your-vercel-app.vercel.app
+FRONTEND_URL=https://www.nuhomeinteriors.in
 
 # ===============================================
 # SETUP INSTRUCTIONS:
 # ===============================================
-# 1. Rename this file to ".env" (exactly, no .txt)
-# 2. Update EMAIL_PASSWORD with App Password from nuhomeinteriors9@gmail.com
-#    Steps:
-#    a. Go to: https://myaccount.google.com/
-#    b. Security → 2-Step Verification (enable it)
-#    c. Security → App passwords
-#    d. Generate password for "Mail"
-#    e. Copy 16-character password (remove spaces)
-#    f. Paste here as EMAIL_PASSWORD
-# 3. Save the file
-# 4. Never commit this file to Git (it's in .gitignore)
-# ===============================================
+# 1. Get Gmail App Password:
+#    a. Go to: https://myaccount.google.com/security
+#    b. Enable 2-Step Verification
+#    c. Go to: https://myaccount.google.com/apppasswords
+#    d. Create app password for "Mail"
+#    e. Copy the 16-character password (REMOVE SPACES)
+#    f. Paste as EMAIL_PASSWORD (example: abcdabcdabcdabcd)
 #
-# EMAIL FLOW:
-# When user submits form:
-# 1. Data saved to MongoDB (nuhome_interiors database)
-# 2. Email FROM: nuhomeinteriors9@gmail.com → TO: nuhomeinteriorleads@gmail.com
-# 3. Confirmation email sent to customer
+# 2. For Render.com deployment:
+#    - Add all these variables in Environment tab
+#    - Make sure EMAIL_PASSWORD has NO SPACES
+#    - Use your actual MongoDB URI
 # ===============================================
-
