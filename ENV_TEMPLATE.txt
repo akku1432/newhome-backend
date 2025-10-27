@@ -48,7 +48,11 @@ WHATSAPP_PHONE=916300724553
 
 # Frontend URL (for CORS)
 # -----------------------------------------------
+# For local development:
 FRONTEND_URL=http://localhost:3000
+
+# For production (Vercel), update with your Vercel URL:
+# FRONTEND_URL=https://your-vercel-app.vercel.app
 
 # ===============================================
 # SETUP INSTRUCTIONS:
