@@ -15,13 +15,17 @@ const portfolioRoutes = require('./routes/portfolioRoutes');
 // Initialize Express app
 const app = express();
 
-// CORS Configuration for Vercel Frontend + Local Development
+// CORS Configuration for Production + Local Development
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   process.env.FRONTEND_URL,
-  // Add your Vercel domains here
-  'https://your-vercel-app.vercel.app',
+  // Production domains
+  'https://www.nuhomeinteriors.in',
+  'https://nuhomeinteriors.in',
+  'http://www.nuhomeinteriors.in',
+  'http://nuhomeinteriors.in',
+  // Vercel domains (if using Vercel preview)
   'https://nuhome-interiors.vercel.app',
   // Vercel preview deployments
   /\.vercel\.app$/
