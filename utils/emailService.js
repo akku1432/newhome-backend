@@ -1,16 +1,23 @@
 // Email service using Nodemailer
 const nodemailer = require('nodemailer');
 
-// Create reusable transporter
+// Create reusable transporter with enhanced Gmail settings
 const createTransporter = () => {
   return nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: false, // true for 465, false for other ports
+    port: parseInt(process.env.EMAIL_PORT),
+    secure: false, // true for 465, false for 587
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD
-    }
+    },
+    tls: {
+      rejectUnauthorized: false, // Accept self-signed certificates
+      ciphers: 'SSLv3'
+    },
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000,
+    socketTimeout: 10000
   });
 };
 
