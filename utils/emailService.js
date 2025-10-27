@@ -1,37 +1,23 @@
-// Email service using Nodemailer
-const nodemailer = require('nodemailer');
+// Email service using SendGrid (more reliable than Gmail SMTP for cloud hosting)
+const sgMail = require('@sendgrid/mail');
 
-// Create reusable transporter with enhanced Gmail settings
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT),
-    secure: false, // true for 465, false for 587
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD
-    },
-    tls: {
-      rejectUnauthorized: false, // Accept self-signed certificates
-      ciphers: 'SSLv3'
-    },
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 10000,
-    socketTimeout: 10000
-  });
-};
+// Initialize SendGrid with API key
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('✅ SendGrid initialized');
+} else {
+  console.warn('⚠️ SENDGRID_API_KEY not found - emails will not be sent');
+}
 
 // Send contact form notification email
 exports.sendContactEmail = async ({ name, email, phone, message }) => {
   try {
-    const transporter = createTransporter();
+    if (!process.env.SENDGRID_API_KEY) {
+      throw new Error('SENDGRID_API_KEY is not configured');
+    }
 
     // Email to business owner (nuhomeinteriorleads@gmail.com)
-    const mailOptions = {
-      from: process.env.EMAIL_FROM, // FROM: nuhomeinteriors9@gmail.com
-      to: 'nuhomeinteriorleads@gmail.com',  // TO: nuhomeinteriorleads@gmail.com
-      subject: `New Contact Form Submission from ${name}`,
-      html: `
+    const businessEmailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
           <div style="background-color: #030F30; color: white; padding: 20px; text-align: center;">
             <h1 style="margin: 0;">NUHome Interiors</h1>
@@ -65,15 +51,10 @@ exports.sendContactEmail = async ({ name, email, phone, message }) => {
             <p>&copy; ${new Date().getFullYear()} NUHome Interiors. All rights reserved.</p>
           </div>
         </div>
-      `
-    };
+      `;
 
-    // Send confirmation email to user
-    const confirmationMailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: email,
-      subject: 'Thank you for contacting NUHome Interiors',
-      html: `
+    // Confirmation email to customer
+    const customerEmailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
           <div style="background-color: #030F30; color: white; padding: 20px; text-align: center;">
             <h1 style="margin: 0;">NUHome Interiors</h1>
@@ -110,22 +91,43 @@ exports.sendContactEmail = async ({ name, email, phone, message }) => {
             <p>&copy; ${new Date().getFullYear()} NUHome Interiors. All rights reserved.</p>
           </div>
         </div>
-      `
+      `;
+
+    // Prepare both emails
+    const businessEmail = {
+      to: 'nuhomeinteriorleads@gmail.com',
+      from: {
+        email: 'nuhomeinteriors9@gmail.com',
+        name: 'NUHome Interiors'
+      },
+      subject: `New Contact Form Submission from ${name}`,
+      html: businessEmailHtml
     };
 
-    // Send both emails
+    const customerEmail = {
+      to: email,
+      from: {
+        email: 'nuhomeinteriors9@gmail.com',
+        name: 'NUHome Interiors'
+      },
+      subject: 'Thank you for contacting NUHome Interiors',
+      html: customerEmailHtml
+    };
+
+    // Send both emails using SendGrid
     await Promise.all([
-      transporter.sendMail(mailOptions),
-      transporter.sendMail(confirmationMailOptions)
+      sgMail.send(businessEmail),
+      sgMail.send(customerEmail)
     ]);
 
-    console.log('✅ Emails sent successfully');
+    console.log('✅ Emails sent successfully via SendGrid');
     console.log(`📧 Business notification sent to: nuhomeinteriorleads@gmail.com`);
     console.log(`📧 Customer confirmation sent to: ${email}`);
     
     return true;
   } catch (error) {
     console.error('❌ Email sending error:', error);
+    console.error('Error details:', error.response?.body || error.message);
     throw error;
   }
 };
